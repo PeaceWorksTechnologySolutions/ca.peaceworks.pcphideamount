@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<extension key="ca.peaceworks.pcphideamount" type="module">
+  <file>pcphideamount</file>
+  <name>PCP Hide Amount</name>
+  <description>This provides an additional option for donors when having their donation show up in the honor roll. They can now choose if they want the amount to be shown or not. This extension was developed by PeaceWorks Technology Solutions.</description>
+  <license>AGPL-3.0</license>
+  <maintainer>
+    <author>PeaceWorks Technology Solutions</author>
+    <email>info@peaceworks.ca</email>
+  </maintainer>
+  <urls>
+    <url desc="Main Extension Page">https://gitlab.com/PeaceWorks/ca.peaceworks.pcphideamount</url>
+    <url desc="Documentation">https://gitlab.com/PeaceWorks/ca.peaceworks.pcphideamount</url>
+    <url desc="Support">https://peaceworks.c</url>
+    <url desc="Licensing">http://www.gnu.org/licenses/agpl-3.0.html</url>
+  </urls>
+  <releaseDate>2019-05-15</releaseDate>
+  <version>1.0</version>
+  <develStage>alpha</develStage>
+  <compatibility>
+    <ver>5.0</ver>
+  </compatibility>
+  <comments></comments>
+  <civix>
+    <namespace>CRM/Pcphideamount</namespace>
+  </civix>
+</extension>

@@ -161,3 +161,34 @@ function pcphideamount_civicrm_navigationMenu(&$menu) {
   ));
   _pcphideamount_civix_navigationMenu($menu);
 } // */
+
+/**
+ * Implements hook_civicrm_buildForm().
+ *
+ * Insert option to hide amount for PCP
+ *
+ * @param string $formName
+ * @param CRM_Core_Form $form
+ */
+function pcphideamount_civicrm_buildForm($formName, &$form) {
+  if ($formName == 'CRM_Contribute_Form_Contribution_Main') {
+    // Assumes templates are in a templates folder relative to this file
+    //$templatePath = realpath(dirname(__FILE__)."/templates");
+    // Add the field element in the form
+    //$form->add('text', 'testfield', ts('Test field'));
+    $form->add('checkbox', 'pcp_show_amount', ts('Display the donation amount'), NULL, NULL, NULL);
+    // dynamically insert a template block in the page
+    // FIXME: actually want to add this right before #nameID (as sibling)
+    CRM_Core_Region::instance('page-body')->add(array(
+      //'template' => "{$templatePath}/testfield.tpl"
+      'template' => "CRM/Pcphideamount/pcp_show_amount.tpl"
+    ));
+
+
+//    if ($form->getAction() == CRM_Core_Action::ADD) {
+//      $defaults['price_3'] = '710';
+//      $form->setDefaults($defaults);
+//    }
+  }
+}
+

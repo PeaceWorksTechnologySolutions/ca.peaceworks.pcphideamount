@@ -1,6 +1,8 @@
 <?php
 
 require_once 'pcphideamount.civix.php';
+require_once 'pcphideamount.db.inc';
+
 use CRM_Pcphideamount_ExtensionUtil as E;
 
 /**
@@ -172,16 +174,23 @@ function pcphideamount_civicrm_navigationMenu(&$menu) {
  */
 function pcphideamount_civicrm_buildForm($formName, &$form) {
   if ($formName == 'CRM_Contribute_Form_Contribution_Main') {
-    // Assumes templates are in a templates folder relative to this file
-    //$templatePath = realpath(dirname(__FILE__)."/templates");
+//drupal_set_message('ok');
+    $templatePath = realpath(dirname(__FILE__) ."/templates/Pcphideamount");
     // Add the field element in the form
     //$form->add('text', 'testfield', ts('Test field'));
     $form->add('checkbox', 'pcp_show_amount', ts('Display the donation amount'), NULL, NULL, NULL);
+//    $form->_defaults['pcp_show_amount'] = 1;
+//drupal_set_message('<pre>'. print_r($form,true) .'</pre>');
     // dynamically insert a template block in the page
-    // FIXME: actually want to add this right before #nameID (as sibling)
     CRM_Core_Region::instance('page-body')->add(array(
-      //'template' => "{$templatePath}/testfield.tpl"
-      'template' => "CRM/Pcphideamount/pcp_show_amount.tpl"
+      'template' => "{$templatePath}/pcp_show_amount.tpl"
+    ));
+//    CRM_Core_Region::instance('page-body')->add(array(
+//      'jquery' => '$(".pcp-section #nameID").before("<h2>MOO 2</h2>");',
+//    ));
+    // Move this to be right before #nameID (as sibling)
+    CRM_Core_Region::instance('page-body')->add(array(
+      'jquery' => '$(".pcp-section #nameID").before($("#pcpshowamountID"));',
     ));
 
 
@@ -189,6 +198,42 @@ function pcphideamount_civicrm_buildForm($formName, &$form) {
 //      $defaults['price_3'] = '710';
 //      $form->setDefaults($defaults);
 //    }
+  }
+}
+
+/**
+ * Implements hook_civicrm_postProcess().
+ *
+ * @param string $formName
+ * @param CRM_Core_Form $form
+ */
+function pcphideamount_civicrm_postProcess($formName, &$form) {
+  if ($formName == 'CRM_Contribute_Form_Contribution_Main') {
+//drupal_set_message('fired');
+//drupal_set_message('contact id: '. print_r($form->_contactID,true));
+/*
+$c = $form->_contactID;
+if ($c) {
+  $result = civicrm_api3('Contribution', 'get', [
+  'sequential' => 1,
+  'return' => ["total_amount", "receive_date"],
+  'contact_id' => "user_contact_id",
+  'options' => ['sort' => "-receive_date", 'limit' => 3],
+]);
+drupal_set_message('r: '. print_r($result,true));
+}
+*/
+    //$gid = $form->getVar( '_gid' );
+//drupal_set_message(print_r($form->get('pcp_show_amount'),true));
+//drupal_set_message(print_r($form->get('pcp_display_in_roll'),true));
+//drupal_set_message(print_r($form->exportValues(),true));
+    $values = $form->exportValues();
+    if ($values['pcp_display_in_roll'] and !$values['pcp_show_amount']) {
+//drupal_set_message('set as hidden');
+      pcphideamount_db_add_auto_id($cid);
+    }
+
+//drupal_set_message(print_r($form,true));
   }
 }
 

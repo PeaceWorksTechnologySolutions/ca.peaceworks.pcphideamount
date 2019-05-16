@@ -173,8 +173,9 @@ function pcphideamount_civicrm_navigationMenu(&$menu) {
  * @param CRM_Core_Form $form
  */
 function pcphideamount_civicrm_buildForm($formName, &$form) {
+  $templatePath = realpath(dirname(__FILE__) ."/templates/Pcphideamount");
+
   if ($formName == 'CRM_Contribute_Form_Contribution_Main') {
-    $templatePath = realpath(dirname(__FILE__) ."/templates/Pcphideamount");
     // Add the field element in the form
     $form->add('checkbox', 'pcp_show_amount', ts('Display the donation amount'), NULL, NULL, NULL);
     // dynamically insert a template block in the page
@@ -184,6 +185,22 @@ function pcphideamount_civicrm_buildForm($formName, &$form) {
     // Move this to be right before #nameID (as sibling)
     CRM_Core_Region::instance('page-body')->add(array(
       'jquery' => '$(".pcp-section #nameID").before($("#pcpshowamountID"));',
+    ));
+  }
+  if ($formName == 'CRM_Contribute_Form_ContributionView') {
+    // dynamically insert a template block in the page
+    $label = ts('Display Amount On Honor Roll?');
+    $value = ts('Yes');
+    if (pcphideamount_db_cid_hidden($form->get('id'))) {
+      $value = ts('No');
+    }
+
+    CRM_Core_Region::instance('page-body')->add(array(
+      'jquery' => '$("#PCPView table.crm-info-panel tr:last-child").after(`
+<tr id=pcpshowamountID>
+  <td class=label>'. $label .'</td>
+  <td>'. $value .'</td>
+</tr>`);',
     ));
   }
 }

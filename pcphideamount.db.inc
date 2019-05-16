@@ -4,6 +4,7 @@
  * Functions to read/write on custom tables
  */
 
+
 /**
  * Adds new record of a contribution to have display hidden
  */
@@ -66,5 +67,21 @@ function pcphideamount_db_get_cids() {
     $cids[] = $dao->contribution_id;
   }
   return $cids;
+}
+
+/**
+ * Checks if given contribution_id should be hidden
+ */
+function pcphideamount_db_cid_hidden($contribution_id) {
+  $sql = "SELECT count(id) c FROM civicrm_pcphideamount
+    WHERE contribution_id=$contribution_id
+    AND display_amount=0";
+  $dao = CRM_Core_DAO::executeQuery($sql);
+  if ( $dao->fetch() ) {
+    if ($dao->c > 0) {
+      return TRUE;
+    }
+  }
+  return FALSE;
 }
 

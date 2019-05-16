@@ -53,3 +53,18 @@ function pcphideamount_db_add_auto_id() {
   return FALSE;
 }
 
+/**
+ * Returns array of contribution_ids, where display_amount is 0
+ */
+function pcphideamount_db_get_cids() {
+  $sql = "SELECT contribution_id FROM civicrm_pcphideamount
+    WHERE display_amount=0";
+
+  $cids = array();
+  $dao = CRM_Core_DAO::executeQuery($sql);
+  while ( $dao->fetch() ) {
+    $cids[] = $dao->contribution_id;
+  }
+  return $cids;
+}
+

@@ -175,6 +175,7 @@ function pcphideamount_civicrm_navigationMenu(&$menu) {
 function pcphideamount_civicrm_buildForm($formName, &$form) {
   $templatePath = realpath(dirname(__FILE__) ."/templates/Pcphideamount");
 
+  // This is the donation form the online donor fills out
   if ($formName == 'CRM_Contribute_Form_Contribution_Main') {
     // Add the field element in the form
     $form->add('checkbox', 'pcp_show_amount', ts('Display the donation amount'), NULL, NULL, NULL);
@@ -187,21 +188,39 @@ function pcphideamount_civicrm_buildForm($formName, &$form) {
       'jquery' => '$(".pcp-section #nameID").before($("#pcpshowamountID"));',
     ));
   }
-  if ($formName == 'CRM_Contribute_Form_ContributionView') {
-    // dynamically insert a template block in the page
-    $label = ts('Display Amount On Honor Roll?');
-    $value = ts('Yes');
-    if (pcphideamount_db_cid_hidden($form->get('id'))) {
-      $value = ts('No');
+  
+  // This is the "thank you" page after donating online
+  if ($formName == 'CRM_Contribute_Form_Contribution_ThankYou') {
+    if (!empty($form->_params['pcp_display_in_roll'])) {
+      // dynamically insert message on the page
+      $pcp_show_msg = ts('DO NOT display the contribution amount.');
+      if (!empty($form->_params['pcp_show_amount'])) {
+        $pcp_show_msg = ts('Display the contribution amount.');
+      }
+      CRM_Core_Region::instance('page-body')->add(array(
+        'jquery' => '$(".pcp_display-group .display-block").prepend(`<span>'. $pcp_show_msg .'</span><br/>`);',
+      ));
     }
+  }
+  
+  // This is the admin page for the contribution
+  if ($formName == 'CRM_Contribute_Form_ContributionView') {
+    if (!empty($form->get_template_vars('pcp_display_in_roll'))) {
+      // dynamically insert a template block in the page
+      $label = ts('Display Amount On Honor Roll?');
+      $value = ts('Yes');
+      if (pcphideamount_db_cid_hidden($form->get('id'))) {
+        $value = ts('No');
+      }
 
-    CRM_Core_Region::instance('page-body')->add(array(
-      'jquery' => '$("#PCPView table.crm-info-panel tr:last-child").after(`
+      CRM_Core_Region::instance('page-body')->add(array(
+        'jquery' => '$("#PCPView table.crm-info-panel tr:last-child").after(`
 <tr id=pcpshowamountID>
   <td class=label>'. $label .'</td>
   <td>'. $value .'</td>
 </tr>`);',
-    ));
+      ));
+    }
   }
 }
 
@@ -220,8 +239,6 @@ function pcphideamount_civicrm_postProcess($formName, &$form) {
 
   }
 }
-
-// TODO: add to display on thankyou page?
 
 /**
  * Implements hook_civicrm_pageRun().

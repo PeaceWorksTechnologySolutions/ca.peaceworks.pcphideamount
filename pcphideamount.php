@@ -178,7 +178,7 @@ function pcphideamount_civicrm_buildForm($formName, &$form) {
   // This is the donation form the online donor fills out
   if ($formName == 'CRM_Contribute_Form_Contribution_Main') {
     // Add the field element in the form
-    $form->add('checkbox', 'pcp_show_amount', ts('Display the donation amount'), NULL, NULL, NULL);
+    $form->add('checkbox', 'pcp_show_amount', ts('Display the contribution amount'), NULL, NULL, NULL);
     // dynamically insert a template block in the page
     CRM_Core_Region::instance('page-body')->add(array(
       'template' => "{$templatePath}/pcp_show_amount.tpl"
@@ -226,23 +226,16 @@ function pcphideamount_civicrm_buildForm($formName, &$form) {
   // This is the admin edit form for the contribution
   if ($formName == 'CRM_Contribute_Form_Contribution') {
     // Add the field element in the form
-    $form->add('checkbox', 'pcp_show_amount', ts('Display the donation amount'), NULL, NULL, NULL);
+    $form->add('checkbox', 'pcp_show_amount', ts('Display the contribution amount?'), NULL, NULL, NULL);
     CRM_Core_Region::instance('page-body')->add(array(
       'template' => "{$templatePath}/pcp_show_amount_admin.tpl"
     ));
     // Set default value - FIXME: do this properly...
-    $jq = '';
-//    if (pcphideamount_db_cid_hidden($form->get('id'))) {
-//      drupal_set_message('HIDE AMOUNT');
-//    }
-//    else {
-//      drupal_set_message('SHOW AMOUNT');
     if (!pcphideamount_db_cid_hidden($form->get('id'))) {
-      $jq = '$(\'#pcpshowamountID input\').attr(\'checked\', true);';
+      CRM_Core_Region::instance('page-body')->add(array(
+        'jquery' => '$(\'#pcpshowamountID input\').attr(\'checked\', true);',
+      ));
     }
-    CRM_Core_Region::instance('page-body')->add(array(
-      'jquery' => $jq,
-    ));
   }
 }
 
@@ -256,9 +249,12 @@ function pcphideamount_civicrm_postProcess($formName, &$form) {
   if ($formName == 'CRM_Contribute_Form_Contribution_Main') {
     $values = $form->exportValues();
     if ($values['pcp_display_in_roll'] and !$values['pcp_show_amount']) {
-      pcphideamount_db_add_auto_id($cid);
+      pcphideamount_db_add_auto_id();
     }
-
+  }
+  if ($formName == 'CRM_Contribute_Form_Contribution') {
+    $values = $form->exportValues();
+    pcphideamount_db_add($form->_id, !empty($values['pcp_show_amount']));
   }
 }
 

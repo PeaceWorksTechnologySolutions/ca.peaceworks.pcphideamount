@@ -6,9 +6,12 @@
 
 
 /**
- * Adds new record of a contribution to have display hidden
+ * Adds new record of a contribution to have display hidden/shown
+ * 0 = hide amount in honor roll; 1 = show amount
  */
-function pcphideamount_db_add($contribution_id) {
+function pcphideamount_db_add($contribution_id, $value=0) {
+  $value = $value ? 1 : 0;
+
   // Check for existing record for the same contribution
   $existing_id = NULL;
   $sql = "SELECT id FROM civicrm_pcphideamount
@@ -22,11 +25,11 @@ function pcphideamount_db_add($contribution_id) {
   if (empty($existing_id)) {
     $sql = "INSERT INTO civicrm_pcphideamount 
       (id, contribution_id, display_amount)
-      VALUES (NULL, $contribution_id, 0)";
+      VALUES (NULL, $contribution_id, $value)";
   }
   else {
     $sql = "UPDATE civicrm_pcphideamount 
-      SET display_amount=0
+      SET display_amount=$value
       WHERE contribution_id=$contribution_id";
   }
 

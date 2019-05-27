@@ -203,7 +203,7 @@ function pcphideamount_civicrm_buildForm($formName, &$form) {
     }
   }
   
-  // This is the admin page for the contribution
+  // This is the admin view page for the contribution
   if ($formName == 'CRM_Contribute_Form_ContributionView') {
     if (!empty($form->get_template_vars('pcp_display_in_roll'))) {
       // dynamically insert a template block in the page
@@ -221,6 +221,28 @@ function pcphideamount_civicrm_buildForm($formName, &$form) {
 </tr>`);',
       ));
     }
+  }
+
+  // This is the admin edit form for the contribution
+  if ($formName == 'CRM_Contribute_Form_Contribution') {
+    // Add the field element in the form
+    $form->add('checkbox', 'pcp_show_amount', ts('Display the donation amount'), NULL, NULL, NULL);
+    CRM_Core_Region::instance('page-body')->add(array(
+      'template' => "{$templatePath}/pcp_show_amount_admin.tpl"
+    ));
+    // Set default value - FIXME: do this properly...
+    $jq = '';
+//    if (pcphideamount_db_cid_hidden($form->get('id'))) {
+//      drupal_set_message('HIDE AMOUNT');
+//    }
+//    else {
+//      drupal_set_message('SHOW AMOUNT');
+    if (!pcphideamount_db_cid_hidden($form->get('id'))) {
+      $jq = '$(\'#pcpshowamountID input\').attr(\'checked\', true);';
+    }
+    CRM_Core_Region::instance('page-body')->add(array(
+      'jquery' => $jq,
+    ));
   }
 }
 

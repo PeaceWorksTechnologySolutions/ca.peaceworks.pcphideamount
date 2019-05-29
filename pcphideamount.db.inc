@@ -76,6 +76,10 @@ function pcphideamount_db_get_cids() {
  * Checks if given contribution_id should be hidden
  */
 function pcphideamount_db_cid_hidden($contribution_id) {
+  if (!$contribution_id) {
+    return FALSE;
+  }
+
   $sql = "SELECT count(id) c FROM civicrm_pcphideamount
     WHERE contribution_id=$contribution_id
     AND display_amount=0";

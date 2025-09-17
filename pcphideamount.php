@@ -205,7 +205,7 @@ function pcphideamount_civicrm_buildForm($formName, &$form) {
   
   // This is the admin view page for the contribution
   if ($formName == 'CRM_Contribute_Form_ContributionView') {
-    if (!empty($form->get_template_vars('pcp_display_in_roll'))) {
+    if (!empty($form->getTemplateVars('pcp_display_in_roll'))) {
       // dynamically insert a template block in the page
       $label = ts('Display Amount On Honor Roll?');
       $value = ts('Yes');
@@ -265,7 +265,7 @@ function pcphideamount_civicrm_postProcess($formName, &$form) {
 function pcphideamount_civicrm_pageRun(&$page) {
   $pageName = $page->getVar('_name');
   if ($pageName == 'CRM_PCP_Page_PCPInfo') {
-    $honor = $page->get_template_vars('honor');
+    $honor = $page->getTemplateVars('honor');
     $hides = pcphideamount_db_get_cids();
 
     foreach ($honor as $cid => $value) {

@@ -180,13 +180,13 @@ function pcphideamount_civicrm_buildForm($formName, &$form) {
     // Add the field element in the form
     $form->add('checkbox', 'pcp_show_amount', ts('Display the contribution amount'), NULL, NULL, NULL);
     // dynamically insert a template block in the page
-    CRM_Core_Region::instance('page-body')->add(array(
+    CRM_Core_Region::instance('page-body')->add([
       'template' => "{$templatePath}/pcp_show_amount.tpl"
-    ));
+    ]);
     // Move this to be right before #nameID (as sibling)
-    CRM_Core_Region::instance('page-body')->add(array(
+    CRM_Core_Region::instance('page-body')->add([
       'jquery' => '$(".pcp-section #nameID").before($("#pcpshowamountID"));',
-    ));
+    ]);
   }
   
   // This is the "thank you" page after donating online
@@ -197,9 +197,9 @@ function pcphideamount_civicrm_buildForm($formName, &$form) {
       if (!empty($form->_params['pcp_show_amount'])) {
         $pcp_show_msg = ts('Display the contribution amount.');
       }
-      CRM_Core_Region::instance('page-body')->add(array(
+      CRM_Core_Region::instance('page-body')->add([
         'jquery' => '$(".pcp_display-group .display-block").prepend(`<span>'. $pcp_show_msg .'</span><br/>`);',
-      ));
+      ]);
     }
   }
   
@@ -213,13 +213,13 @@ function pcphideamount_civicrm_buildForm($formName, &$form) {
         $value = ts('No');
       }
 
-      CRM_Core_Region::instance('page-body')->add(array(
+      CRM_Core_Region::instance('page-body')->add([
         'jquery' => '$("#PCPView table.crm-info-panel tr:last-child").after(`
 <tr id=pcpshowamountID>
   <td class=label>'. $label .'</td>
   <td>'. $value .'</td>
 </tr>`);',
-      ));
+      ]);
     }
   }
 
@@ -227,14 +227,14 @@ function pcphideamount_civicrm_buildForm($formName, &$form) {
   if ($formName == 'CRM_Contribute_Form_Contribution') {
     // Add the field element in the form
     $form->add('checkbox', 'pcp_show_amount', ts('Display the contribution amount?'), NULL, NULL, NULL);
-    CRM_Core_Region::instance('page-body')->add(array(
+    CRM_Core_Region::instance('page-body')->add([
       'template' => "{$templatePath}/pcp_show_amount_admin.tpl"
-    ));
+    ]);
     // Set default value - FIXME: do this properly...
     if (!pcphideamount_db_cid_hidden($form->get('id'))) {
-      CRM_Core_Region::instance('page-body')->add(array(
+      CRM_Core_Region::instance('page-body')->add([
         'jquery' => '$(\'#pcpshowamountID input\').attr(\'checked\', true);',
-      ));
+      ]);
     }
   }
 }

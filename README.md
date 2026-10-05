@@ -1,3 +1,6 @@
+# This extension is no longer maintained.
+
+
 # ca.peaceworks.pcphideamount
 
 This provides an additional option for donors who are contributing on a PCP (personal campaign page). They can already select to have their donation show up in the honor roll or not, for the PCP they are supporting. This extension gives them the further option to choose if the donation amount is displayed or not, in that honor roll text.
